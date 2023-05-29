@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit"
+const calculatsFromLocal = localStorage.getItem("Calculats")
+const calculats = calculatsFromLocal ? JSON.parse(calculatsFromLocal) : []
 const initialState = {
+    calculats: calculats,
     operator: "PLUS",
     inputOne: "",
     inputTwo: "",
@@ -9,6 +12,15 @@ export const calculatorSlice = createSlice({
     name: "calculator",
     initialState,
     reducers: {
+        addCalculate: (state, action) => {
+            console.log(state.result);
+            state.calculats = [...state.calculats, state.result]
+        },
+        resetHandler: (state, action) => {
+            state.inputOne = "";
+            state.inputTwo = "";
+            state.result = 0;
+        },
         getValueOfInputOne: (state, action) => {
             state.inputOne = action.payload
         },
@@ -19,17 +31,17 @@ export const calculatorSlice = createSlice({
             state.operator = action.payload
         },
         plusHandler: (state, action) => {
-            state.result = state.inputOne + state.inputTwo
-        },
-        minusHandler: (state, action) => {
-            state.result = state.inputOne - state.inputTwo
-        },
-        multiclicationHandler: (state, action) => {
-            state.result = state.inputOne * state.inputTwo
-        },
-        divisionHandler: (state, action) => {
-            state.result = state.inputOne / state.inputTwo
-        }
+            state.result = state.inputOne + state.inputTwo;
+          },
+          minusHandler: (state, action) => {
+            state.result = state.inputOne - state.inputTwo;
+          },
+          multiplicationHandler: (state, action) => {
+            state.result = state.inputOne * state.inputTwo;
+          },
+          divisionHandler: (state, action) => {
+            state.result = state.inputOne / state.inputTwo;
+          }
     },
 })
 export const calculatorReducer = calculatorSlice.reducer

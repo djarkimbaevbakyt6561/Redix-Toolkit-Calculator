@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import {
@@ -6,6 +7,7 @@ import {
   getSelectValueAction,
   calculatorActions,
 } from '../store/calculator';
+import { CalculateAnswers } from './calculator/CalculateAnswers';
 
 export const Calculator = () => {
   const calculator = useSelector((store) => store.calculator);
@@ -20,54 +22,73 @@ export const Calculator = () => {
   function getInputTwoValue(e) {
     dispatch(calculatorActions.getValueOfInputTwo(Number(e.target.value)));
   }
-  function resultHandler() {
-    switch (calculator.operator) {
-      case 'PLUS':
-        return dispatch(calculatorActions.plusHandler());
-      case 'MINUS':
-        return dispatch(calculatorActions.minusHandler());
-      case 'MULTIPLICATION':
-        return dispatch(calculatorActions.multiclicationHandler());
-      case 'DIVISION':
-        return dispatch(calculatorActions.divisionHandler());
+  function resultHandler(e) {
+    e.preventDefault();
+    if (calculator.inputOne === '' || calculator.inputTwo === '') {
+      alert('Заполните значение!');
+    } else {
+      switch (calculator.operator) {
+        case 'PLUS':
+          dispatch(calculatorActions.plusHandler());
+          break;
+        case 'MINUS':
+          dispatch(calculatorActions.minusHandler());
+          break;
+        case 'MULTIPLICATION':
+          dispatch(calculatorActions.multiplicationHandler());
+          break;
+        case 'DIVISION':
+          dispatch(calculatorActions.divisionHandler());
+          break;
+        default:
+          break;
+      }
+      dispatch(calculatorActions.addCalculate());
+      dispatch(calculatorActions.resetHandler());
     }
   }
+
+  console.log(calculator.calculats);
+  useEffect(() => {
+    localStorage.setItem('Calculats', JSON.stringify(calculator.calculats));
+  }, [calculator.calculats]);
   return (
-    <Container>
-      <h1>Calculator</h1>
-      <OperatorContainer>
-        <Input
-          value={calculator.inputOne}
-          type="number"
-          onChange={getInputOneValue}
-        />
-        <select onChange={getSelectValue} name="Arifmetic action" id="">
-          <option value="PLUS">+</option>
-          <option value="MINUS">-</option>
-          <option value="MULTIPLICATION">x</option>
-          <option value="DIVISION">/</option>
-        </select>
-        <Input
-          value={calculator.inputTwo}
-          type="number"
-          onChange={getInputTwoValue}
-        />
-        <button onClick={resultHandler}>=</button>
-        <p>{calculator.result}</p>
-      </OperatorContainer>
-    </Container>
+      <Form>
+        <h1>Calculator</h1>
+        <OperatorContainer>
+          <Input
+            value={calculator.inputOne}
+            type="number"
+            onChange={getInputOneValue}
+          />
+          <select onChange={getSelectValue} name="Arifmetic action" id="">
+            <option value="PLUS">+</option>
+            <option value="MINUS">-</option>
+            <option value="MULTIPLICATION">x</option>
+            <option value="DIVISION">/</option>
+          </select>
+          <Input
+            value={calculator.inputTwo}
+            type="number"
+            onChange={getInputTwoValue}
+          />
+          <button onClick={resultHandler}>=</button>
+        </OperatorContainer>
+        <CalculateAnswers />
+      </Form>
   );
 };
-const Container = styled.div`
+
+const CalcultsContainer = styled.div``;
+const Form = styled.form`
   margin-top: 30px;
   border-radius: 10px;
   background-color: #ffc83d;
-  width: 50%;
-  height: 20vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 50%;
 `;
 const OperatorContainer = styled.div`
   display: flex;
